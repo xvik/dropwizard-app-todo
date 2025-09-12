@@ -1,0 +1,43 @@
+# Prod configuration
+
+server:
+  rootPath: '/rest/*'
+
+  type: simple
+  applicationContextPath: /
+  adminContextPath: /admin
+  connector:
+    type: http
+    port: 8080
+
+  requestLog:
+    appenders:
+      - type: console
+#        timeZone: Europe/Moscow
+
+      - type: file
+        currentLogFilename: logs/requests.log
+        threshold: ALL
+        archive: true
+        archivedLogFilenamePattern: logs/requests-%i.log
+        maxFileSize: 10MiB
+        archivedFileCount: 5
+#        timeZone: Europe/Moscow
+
+logging:
+  level: INFO
+
+  loggers:
+    ru.vyarus.app.todo: INFO
+
+  appenders:
+    - type: console
+#      timeZone: Europe/Moscow
+
+    - type: file
+      currentLogFilename: logs/app.log
+      threshold: ALL
+      archive: true
+      archivedLogFilenamePattern: logs/app-%d.log
+      archivedFileCount: 5
+#      timeZone: Europe/Moscow

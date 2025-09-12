@@ -1,0 +1,9 @@
+server:
+  rootPath: '/rest/*'
+
+  type: simple
+  applicationContextPath: /
+  adminContextPath: /admin
+  connector:
+    type: http
+    port: 9999
