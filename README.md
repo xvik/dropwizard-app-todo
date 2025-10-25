@@ -3,7 +3,7 @@
 A very basic [dropwizard-guicey](https://github.com/xvik/dropwizard-guicey) demo application: a very simple todo app.
 Includes the simplest delivery packaging using gradle application plugin.
 
-Dropwizard 4 (guicey 7.x)
+Dropwizard 5 (guicey 8.x)
 
 Could be used for bootstrapping new projects.
 
@@ -47,13 +47,16 @@ In IntelliJIdea it should work out of the box. in case of problems read [this gu
 
 ## Test
 
-There are also two tests: one showing lightweight rest testing (without starting web container) 
-and the other shows complete integration test.
+There are three versions of the same tests: 
+
+* Lightweight rest tests (stub rest, without starting web container)
+* Integration test with (full application startup)
+* Integration test with static client (when resource methods use for test call configuration)
+    The same calls will work with lightweight rest too.
 
 NOTE: as rest use PATCH method, default JerseyClient, prepared by guicey [will not work on jdk > 16](https://github.com/eclipse-ee4j/jersey/issues/4825#issuecomment-925836004)
 (or see [blog post](http://blog.supol.cz/?p=320))
-To workaround it, custom client factory used with apache client instead of HttpURLConnection.
-Lightweight tests are not affected because they don't perform actual http calls.
+To workaround it, apache client factory is used.
 
 ## Banner
 

@@ -8,7 +8,7 @@ wrapper {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
 }
 
 description = 'Todo app'
@@ -19,9 +19,9 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.32'
     annotationProcessor 'org.projectlombok:lombok:1.18.32'
 
-    implementation platform('ru.vyarus.guicey:guicey-bom:7.2.2')
+    implementation platform('ru.vyarus.guicey:guicey-bom:8.0.0')
     // optional to use higher dropwizard version
-    implementation platform('io.dropwizard:dropwizard-dependencies:4.0.16')
+//    implementation platform('io.dropwizard:dropwizard-dependencies:5.0.0')
 
     // no need to specify versions
     implementation 'ru.vyarus:dropwizard-guicey'

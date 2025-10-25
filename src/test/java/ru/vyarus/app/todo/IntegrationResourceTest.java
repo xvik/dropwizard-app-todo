@@ -1,16 +1,16 @@
 package ru.vyarus.app.todo;
 
-import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
 import org.junit.jupiter.api.Test;
 import ru.vyarus.app.todo.model.Todo;
-import ru.vyarus.app.todo.util.CustomClientFactory;
-import ru.vyarus.dropwizard.guice.test.ClientSupport;
+import ru.vyarus.app.todo.resource.TodoResource;
+import ru.vyarus.dropwizard.guice.test.client.ResourceClient;
 import ru.vyarus.dropwizard.guice.test.jupiter.TestDropwizardApp;
+import ru.vyarus.dropwizard.guice.test.jupiter.ext.client.rest.WebResourceClient;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Vyacheslav Rusakov
@@ -18,20 +18,30 @@ import static org.assertj.core.api.Assertions.*;
  */
 // custom configuration is required because otherwise asset registered on root will collide with default rest path
 // alternatively, restMapping = "/rest/"  could be used (if other config fields are not important)
-@TestDropwizardApp(value = TodoApp.class, clientFactory = CustomClientFactory.class,
+@TestDropwizardApp(value = TodoApp.class,
+        // apache client used only because of the PATCH method usage
+        apacheClient = true,
         config = "src/test/resources/test-config.yml")
-public class IntegrationResourceTest {
+public class IntegrationResourceTest extends AbstractTest {
+
+    @WebResourceClient
+    ResourceClient<TodoResource> rest;
 
     @Test
-    void testRest(ClientSupport client) {
+    void testRest() {
+
         WHEN("Loading empty list");
-        List<Todo> res = client.targetRest("todo/").request().buildGet().invoke(new GenericType<>() {});
+        List<Todo> res = rest.get("/", new GenericType<>() {});
 
         // THEN list is empty
         assertThat(res).isEmpty();
 
         WHEN("Add element");
-        Todo added = client.post("rest/todo/", Todo.builder().title("one").completed(false).build(), Todo.class);
+        Todo added = rest.post("/", Todo.builder()
+                        .title("one")
+                        .completed(false)
+                        .build(),
+                Todo.class);
 
         // THEN record added
         assertThat(added)
@@ -40,7 +50,11 @@ public class IntegrationResourceTest {
                 .containsExactly(1, "one", false);
 
         WHEN("Add second element");
-        added = client.post("rest/todo/", Todo.builder().title("two").completed(false).build(), Todo.class);
+        added = rest.post("/", Todo.builder()
+                        .title("two")
+                        .completed(false)
+                        .build(),
+                Todo.class);
 
         // THEN ok
         assertThat(added)
@@ -49,7 +63,7 @@ public class IntegrationResourceTest {
                 .containsExactly(2, "two", false);
 
         WHEN("Loading not empty list");
-        res = client.targetRest("todo/").request().buildGet().invoke(new GenericType<>() {});
+        res = rest.get("/", new GenericType<>() {});
 
         // THEN list is correct
         assertThat(res).hasSize(2)
@@ -57,7 +71,7 @@ public class IntegrationResourceTest {
                 .containsExactly("one", "two");
 
         WHEN("Loading by ID");
-        Todo item = client.get("rest/todo/1", Todo.class);
+        Todo item = rest.get("/1", Todo.class);
 
         // THEN loaded
         assertThat(item).isNotNull()
@@ -69,7 +83,7 @@ public class IntegrationResourceTest {
                 .title("one_custom")
                 .completed(true)
                 .build();
-        Todo updated = client.targetRest("todo/1").request().build("PATCH", Entity.json(patch)).invoke(Todo.class);
+        Todo updated = rest.patch("/1", patch, Todo.class);
 
         // THEN update ok
         assertThat(updated).isNotNull()
@@ -77,16 +91,12 @@ public class IntegrationResourceTest {
                 .containsExactly(1, "one_custom", true);
 
         WHEN("Remove record");
-        client.delete("rest/todo/1", Void.class);
-        res = client.targetRest("todo/").request().buildGet().invoke(new GenericType<>() {});
+        rest.delete("/1");
+        res = rest.get("/", new GenericType<>() {});
 
         // THEN removed
         assertThat(res).hasSize(1)
                 .extracting(Todo::getId).containsExactly(2);
 
-    }
-
-    private void WHEN(String message) {
-        System.out.println("\n!!! [WHEN] " + message + "\n");
     }
 }
