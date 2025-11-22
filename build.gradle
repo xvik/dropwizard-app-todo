@@ -16,8 +16,8 @@ group = 'ru.vyarus.app'
 
 repositories { mavenLocal(); mavenCentral() }
 dependencies {
-    compileOnly 'org.projectlombok:lombok:1.18.32'
-    annotationProcessor 'org.projectlombok:lombok:1.18.32'
+    compileOnly 'org.projectlombok:lombok:1.18.42'
+    annotationProcessor 'org.projectlombok:lombok:1.18.42'
 
     implementation platform('ru.vyarus.guicey:guicey-bom:8.0.0')
     // optional to use higher dropwizard version
