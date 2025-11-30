@@ -1,4 +1,4 @@
-# Todo: sample dropwizard 4 application
+# Todo: sample Dropwizard 5 application
 
 A very basic [dropwizard-guicey](https://github.com/xvik/dropwizard-guicey) demo application: a very simple todo app.
 Includes the simplest delivery packaging using gradle application plugin.
