@@ -19,7 +19,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.32'
     annotationProcessor 'org.projectlombok:lombok:1.18.32'
 
-    implementation platform('ru.vyarus.guicey:guicey-bom:8.0.0')
+    implementation platform('ru.vyarus.guicey:guicey-bom:8.0.1')
     // optional to use higher dropwizard version
 //    implementation platform('io.dropwizard:dropwizard-dependencies:5.0.0')
 
